@@ -27,42 +27,61 @@ def detail(request, id):
 #add movies to database
 
 def add_movies(request):
-    if request.method == "POST":
-        form = MovieForm(request.POST or None)
+    if request.user.is_authenticated:
+    
+        if request.method == "POST":
+            form = MovieForm(request.POST or None)
 
-        if form.is_valid():
-            data = form.save(commit=False)
-            data.save()
-            return redirect("main:home")
+            if form.is_valid():
+                data = form.save(commit=False)
+                data.save()
+                return redirect("main:home")
+        else:
+            form = MovieForm()
+        return render(request, 'main/addmovies.html', {"form": form, "controller": "Add Movies"})
     else:
-        form = MovieForm()
-    return render(request, 'main/addmovies.html', {"form": form, "controller": "Add Movies"})
+        return redirect("main:home")
 
 
 #edit movies
 
 def edit_movies(request, id):
-    movie = Movie.objects.get(id=id)
+    if request.user.is_authenticated:
+        if request.user.is_superuser:
+            movie = Movie.objects.get(id=id)
 
-#form a check
-    if request.method == "POST":
-        form = MovieForm(request.POST or None,instance=movie)
+            #form a check
+            if request.method == "POST":
+                form = MovieForm(request.POST or None,instance=movie)
 
-        #check if from is valid
-        if form.is_valid():
-            data = form.save(commit = False)
-            data.save()
+                #check if from is valid
+                if form.is_valid():
+                    data = form.save(commit = False)
+                    data.save()
 
-            #return to home page
-            return redirect("main:detail", id)
+                    #return to home page
+                    return redirect("main:detail", id)
+            else:
+                form = MovieForm(instance=movie)
+            return render(request, 'main/addmovies.html', {"form": form, "controller": "Edit Movie"})
+
+        else:
+            return redirect("main:home")
+
     else:
-        form = MovieForm(instance=movie)
-    return render(request, 'main/addmovies.html', {"form": form, "controller": "Edit Movie"})
+        return redirect("accounts:login")
 
 
 #delte movie
 
 def delete_movies(request, id):
-    movie = Movie.objects.get(id=id)
-    movie.delete()
-    return redirect("main:home")
+    if request.user.is_authenticated:
+        if request.user.is_superuser:
+            movie = Movie.objects.get(id=id)
+            movie.delete()
+            return redirect("main:home")
+        else:
+            return redirect("main:home")
+
+    else:
+        return redirect("accounts:login")   
