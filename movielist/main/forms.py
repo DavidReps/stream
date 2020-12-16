@@ -8,3 +8,8 @@ class MovieForm(forms.ModelForm):
         model = Movie
         #what we ask of user to fill in
         fields = ('name', 'director', 'description', 'release_date', 'image')
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model =Review
+        fields = ('comment', 'rating')
