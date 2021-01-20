@@ -14,6 +14,12 @@ class Movie(models.Model):
     rating = models.FloatField(default=0)
     image = models.URLField(default=None, null=True)
 
+    netflix = models.IntegerField(default=0)
+    hulu = models.IntegerField(default=0)
+    amazon = models.IntegerField(default=0)
+    youtube = models.IntegerField(default=0)
+
+
     def __str__(self):
         return self.name
 
@@ -25,6 +31,11 @@ class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.TextField(max_length=1000)
     rating = models.FloatField(default=0)
+    
+    netflix = models.IntegerField(default=0)
+    hulu = models.IntegerField(default=0)
+    amazon = models.IntegerField(default=0)
+    youtube = models.IntegerField(default=0)
 
     def __str__(self):
         return self.user.username

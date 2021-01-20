@@ -20,6 +20,16 @@
 
                 <h5>Rating: {{ average }}/10</h5>
 
+                <br>
+                <h5>Netflix votes: {{ netflix }}</h5>
+                <br>
+                <h5>Hulu votes: {{ hulu }}</h5>
+                <br>
+                <h5>Amazon votes: {{ amazon }}</h5>
+                <br>
+                <h5>Youtube votes: {{ youtube }}</h5>
+
+
                 {% if request.user.is_authenticated %}
                     {% if request.user.is_superuser %}
 
@@ -46,9 +56,26 @@
                 <input type="range" id="rangeInput" name="rating" min="0" max="10" value="0" step="0.1" oninput="amount.value=rangeInput.value">
 
         <output name="amount" id="amount" for="rangeInput">0</output>
+        
+        <br>
+
+                <label for="netflix">Netflix</label>
+                <input type="number" id="netflix" name="netflix" min="0" max="1">
                 <br>
 
-                <input type="submit" class="btn btn-danger" value="Add Review">
+                <label for="amazon">Amazon</label>
+                <input type="number" id="amazon" name="amazon" min="0" max="1">
+                <br>
+
+                <label for="hulu">Hulu</label>
+                <input type="number" id="hulu" name="hulu" min="0" max="1">
+                <br>
+
+                <label for="youtube">Youtube</label>
+                <input type="number" id="youtube" name="youtube" min="0" max="1">
+                <br>
+
+                <input type="submit" class="btn btn-danger" value="Submit Review">
             </form>
         </div>
     </div>

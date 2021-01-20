@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.db.models import Avg
+from django.db.models import Avg, Q, Count, Min, Sum
 from .models import *
 from .forms import *
 
@@ -23,11 +23,26 @@ def home(request):
 
 
 def detail(request, id):
-    movie = Movie.objects.get(id=id) #select everyhting from movie where id = id
+    movie = Movie.objects.get(id=id) #select everything from movie where id = id
 
     reviews = Review.objects.filter(movie = id).order_by("-comment")
 
     average = reviews.aggregate(Avg("rating"))["rating__avg"]
+
+
+    netflix = reviews.aggregate(Sum("netflix"))["netflix__sum"]
+    hulu = reviews.aggregate(Sum("hulu"))["hulu__sum"]
+    amazon = reviews.aggregate(Sum("amazon"))["amazon__sum"]
+    youtube = reviews.aggregate(Sum("youtube"))["youtube__sum"]
+
+ 
+    # netflix = reviews.objects.("Netflix")["rating__avg"]
+    # above_5 = Count('book', filter=Q(book__rating__gt=5))
+    # hulu = reviews.aggregate("Hulu")["rating__avg"]
+    # amazon = reviews.aggregate("Amazon")["rating__avg"]
+    # youtube = reviews.aggregate("YouTube")["rating__avg"]
+
+
 
     if average == None:
         average = 0
@@ -41,6 +56,10 @@ def detail(request, id):
         "movie": movie,
         "reviews": reviews,
         "average": average,
+        "netflix": netflix,
+        "hulu": hulu,
+        "amazon": amazon,
+        "youtube": youtube,
     }
 
     return render(request, 'main/details.html', context)
@@ -107,6 +126,7 @@ def delete_movies(request, id):
     else:
         return redirect("accounts:login") 
 
+
 def add_review(request, id):
     if request.user.is_authenticated:
         movie = Movie.objects.get(id=id)
@@ -116,6 +136,12 @@ def add_review(request, id):
             data = form.save(commit=False)
             data.commit = request.POST["comment"] 
             data.rating = request.POST["rating"]
+
+            # data.netflix = request.POST["netflix"]
+            # data.hulu = request.POST["hulu"] 
+            # data.amazon = request.POST["amazon"]            
+            # data.youtube = request.POST["youtube"] 
+
             data.user = request.user
             data.movie = movie
             data.save()
