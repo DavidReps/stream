@@ -25,7 +25,7 @@ SECRET_KEY = 'i$)y5oh#drr^mxz6we@vlzr)gn(^iurwu!c-8nr5957ow$29&='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['streamsearch.herokuapp.com', 'localhost']
 
 
 # Application definition
